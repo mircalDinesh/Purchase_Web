@@ -25,7 +25,7 @@ public class JavaWebToken {
                 .subject(username)
                 .issuedAt(new Date())
                 // 1 Hour Expiration
-                .expiration(new Date(System.currentTimeMillis() + 900000))
+                .expiration(new Date(System.currentTimeMillis() + 3600))
                 .signWith(getSigningKey())
                 .compact();
     }

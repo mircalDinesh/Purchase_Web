@@ -19,4 +19,9 @@ public class GlobalException {
         return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_ACCEPTABLE);
     }
 
+    @ExceptionHandler(InvalidToken.class)
+    public ResponseEntity<String> invalidToken(InvalidToken e){
+        return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
+    }
+
 }

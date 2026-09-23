@@ -37,15 +37,16 @@ public class EntryRequest extends OncePerRequestFilter {
 
         // TOKEN GENERATION and Only Allow for the Login API
         if(path.equals("/api/auth/authentication/login")) {
-            filterChain.doFilter(wrappedRequest, wrappedResponse);
+            filterChain.doFilter(request, response);
             String body = new String(wrappedRequest.getContentAsByteArray(), StandardCharsets.UTF_8);
             if (!body.isEmpty()) {
                 ObjectMapper mapper = new ObjectMapper();
                 JsonNode jsonNode = mapper.readTree(body);
                 String username = jsonNode.get("email").asText();
-                if (username != null) {
-                    String token = javaWebToken.generateToken(username);
-                    wrappedResponse.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token);
+                String password = jsonNode.get("password").asText();
+                if (username == null  || password == null) {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    wrappedResponse.copyBodyToResponse();
                 }
             }
             wrappedResponse.copyBodyToResponse();
@@ -64,12 +65,10 @@ public class EntryRequest extends OncePerRequestFilter {
             if(javaWebToken.validateToken(jwt)) {
                 filterChain.doFilter(request, response);
                 wrappedResponse.copyBodyToResponse();
-                return;
             }
         }catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             wrappedResponse.copyBodyToResponse();
-            return;
          }
 
     }

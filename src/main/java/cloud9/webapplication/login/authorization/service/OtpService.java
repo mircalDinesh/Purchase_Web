@@ -63,6 +63,6 @@ public class OtpService {
                 loginModule.getRole()
         );
 
-        return ResponseEntity.ok(responseOtp);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(responseOtp);
     }
 }

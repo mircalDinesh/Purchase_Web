@@ -1,0 +1,36 @@
+package cloud9.webapplication.login.authentication.service;
+
+import cloud9.webapplication.login.authentication.dto.LoginDto;
+import cloud9.webapplication.login.authentication.module.LoginModule;
+import cloud9.webapplication.login.authentication.repository.LoginRepo;
+import cloud9.webapplication.login.authorization.service.OtpService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import javax.swing.text.html.Option;
+import java.util.Optional;
+
+@Service
+public class AuthService {
+
+    private final LoginRepo loginRepo;
+    private final OtpService otpService;
+
+    public AuthService(LoginRepo loginRepo, OtpService otpService) {
+        this.loginRepo = loginRepo;
+        this.otpService = otpService;
+    }
+    public ResponseEntity<String> login(@RequestBody LoginDto loginDto) {
+        LoginModule user = Optional.ofNullable(loginRepo.findByEmail(loginDto.getEmail()))
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        if(user.getPassword().equals(loginDto.getPassword())) {
+            otpService.generateOtp(loginDto.getEmail());
+            return ResponseEntity.status(HttpStatus.OK).body("Login Successful");
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong Credentials or Invalid UserName");
+    }
+
+}

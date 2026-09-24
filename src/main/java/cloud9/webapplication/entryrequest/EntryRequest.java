@@ -5,17 +5,14 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
-import org.springframework.http.HttpHeaders;
-import org.springframework.stereotype.Component;
+ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
 
 @Component
 public class EntryRequest extends OncePerRequestFilter {
@@ -42,12 +39,12 @@ public class EntryRequest extends OncePerRequestFilter {
             if (!body.isEmpty()) {
                 ObjectMapper mapper = new ObjectMapper();
                 JsonNode jsonNode = mapper.readTree(body);
-                String username = jsonNode.get("email").asText();
-                String password = jsonNode.get("password").asText();
-               // if (username != null  && password != null) {
-                 //   String token = javaWebToken.generateToken(username);
-                  //  wrappedResponse.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token);
-                //}
+                String username = jsonNode.get("email").asString();
+                String password = jsonNode.get("password").asString();
+                if (username == null  || password == null) {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    wrappedResponse.copyBodyToResponse();
+                }
             }
             wrappedResponse.copyBodyToResponse();
             return;

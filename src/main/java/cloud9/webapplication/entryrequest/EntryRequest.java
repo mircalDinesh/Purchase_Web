@@ -33,7 +33,7 @@ public class EntryRequest extends OncePerRequestFilter {
         String path = request.getRequestURI();
 
         // TOKEN GENERATION and Only Allow for the Login API
-        if(path.equals("/api/auth/authentication/login") || path.equals("api/auth/webrequest/purchase")) {
+        if(path.equals("/api/auth/authentication/login") ) {
             filterChain.doFilter(request, response);
             String body = new String(wrappedRequest.getContentAsByteArray(), StandardCharsets.UTF_8);
             if (!body.isEmpty()) {

@@ -24,4 +24,9 @@ public class GlobalException {
         return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(InValidSequence.class)
+    public ResponseEntity<String> inValidSequence(InValidSequence e){
+        return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_ACCEPTABLE);
+    }
+
 }

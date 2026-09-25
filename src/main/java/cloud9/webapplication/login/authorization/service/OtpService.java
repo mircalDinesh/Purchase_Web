@@ -5,6 +5,7 @@ import cloud9.webapplication.login.mailconnector.TrigerMailSender;
 import cloud9.webapplication.login.otpresponse.OTPResponse;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,17 +16,18 @@ import java.util.concurrent.TimeUnit;
 
 
 @Service
+@RequiredArgsConstructor
 public class OtpService {
 
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
     private final TrigerMailSender trigerMailSender;
     private final LoginRepo loginRepo;
 
-    public OtpService(TrigerMailSender trigerMailSender, LoginRepo loginRepo) {
-        this.trigerMailSender = trigerMailSender;
-        this.loginRepo = loginRepo;
-
-    }
+//    public OtpService(TrigerMailSender trigerMailSender, LoginRepo loginRepo) {
+//        this.trigerMailSender = trigerMailSender;
+//        this.loginRepo = loginRepo;
+//
+//    }
 
     private final Cache<String, String> otpCache = CacheBuilder.newBuilder()
             .expireAfterWrite(2, TimeUnit.MINUTES)
@@ -63,6 +65,6 @@ public class OtpService {
                 loginModule.getRole()
         );
 
-        return ResponseEntity.ok(responseOtp);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(responseOtp);
     }
 }

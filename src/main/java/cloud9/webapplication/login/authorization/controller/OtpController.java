@@ -18,7 +18,7 @@ public class OtpController {
 
     @PostMapping("/otpverify")
     public ResponseEntity<OTPResponse> verify(@RequestParam String email, @RequestParam String code) {
-        System.out.println(code);
+      //  System.out.println(code);
         return  otpService.verifyOtp(email, code);
     }
 

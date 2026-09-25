@@ -18,12 +18,11 @@ public interface VoucherSeriesRepo extends JpaRepository<VoucherSeries, Long> {
     @Query("SELECT s FROM VoucherSeries s WHERE s.prefix = :prefix AND s.financialYear = :financialYear")
     Optional<VoucherSeries> findByPrefixAndFinancialYearWithLock(String prefix, String financialYear);
 
-    // NEW — atomic get-or-create, closes the race window entirely
     @Modifying
     @Query(value = """
-        INSERT INTO voucher_series (prefix, financial_year, last_number)
-        VALUES (:prefix, :financialYear, 0)
-        ON CONFLICT (prefix, financial_year) DO NOTHING
-        """, nativeQuery = true)
+    INSERT INTO voucherseries (prefix, financial_year, last_number)
+    VALUES (:prefix, :financialYear, 0)
+    ON CONFLICT (prefix, financial_year) DO NOTHING
+    """, nativeQuery = true)
     void ensureSeriesExists(@Param("prefix") String prefix, @Param("financialYear") String financialYear);
 }

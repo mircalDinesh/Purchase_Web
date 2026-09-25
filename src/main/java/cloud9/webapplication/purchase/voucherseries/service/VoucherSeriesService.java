@@ -34,16 +34,23 @@ public class VoucherSeriesService {
     public String SaveLastSequence(@NonNull String prefix) {
         String financialYear = getFinancialYear();
 
-        // Why this one Used then because new FY Automatically Insert Into Entries
-        sequenceRepository.ensureSeriesExists(prefix, financialYear);
 
         VoucherSeries seq = sequenceRepository
                 .findByPrefixAndFinancialYearWithLock(prefix, financialYear)
-                .orElseThrow(() -> new IllegalStateException(
-                        "Series row missing after ensureSeriesExists for " + prefix + "/" + financialYear));
+                .orElseGet(() ->
+                        {
+                            VoucherSeries sequence = new VoucherSeries();
+                            sequence.setPrefix(prefix);
+                            sequence.setFinancialYear(financialYear);
+                            sequence.setLastNumber(0L);
+                            return sequenceRepository.save(sequence);
+                        }
+                );
 
         long nextNumber = seq.getLastNumber() + 1;
+        System.out.println(nextNumber);
         seq.setLastNumber(nextNumber);
+
         sequenceRepository.saveAndFlush(seq);
         log.info("saveVoucherNumber: prefix={}, fy={}, nextNumber={}", prefix, financialYear, nextNumber);
         return String.format("%s/%04d/%s", prefix, nextNumber, financialYear);

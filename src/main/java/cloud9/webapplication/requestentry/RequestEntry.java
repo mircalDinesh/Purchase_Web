@@ -1,4 +1,4 @@
-package cloud9.webapplication.entryrequest;
+package cloud9.webapplication.requestentry;
 import cloud9.webapplication.security.JavaWebToken;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -15,11 +15,11 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 @Component
-public class EntryRequest extends OncePerRequestFilter {
+public class RequestEntry extends OncePerRequestFilter {
 
     private final JavaWebToken javaWebToken;
 
-    public EntryRequest(@NonNull JavaWebToken javaWebToken) {
+    public RequestEntry(@NonNull JavaWebToken javaWebToken) {
         this.javaWebToken = javaWebToken;
     }
 

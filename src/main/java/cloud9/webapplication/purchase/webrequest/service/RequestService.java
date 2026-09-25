@@ -1,4 +1,5 @@
 package cloud9.webapplication.purchase.webrequest.service;
+import cloud9.webapplication.purchase.voucherseries.service.VoucherSeriesService;
 import cloud9.webapplication.purchase.webrequest.dto.RequestVoucher;
 import cloud9.webapplication.purchase.webrequest.mapper.MappingVoucher;
 import cloud9.webapplication.purchase.webrequest.module.VoucherDetails;
@@ -17,10 +18,12 @@ public class RequestService {
 
     private final WebRequestRep webRequestRep;
     private final MappingVoucher mappedVoucher;
+    private final VoucherSeriesService voucherSeriesService;
 
 
     @Transactional
     public ResponseEntity<String> PurchaseRequest(@RequestBody RequestVoucher requestVoucher){
+        String voucherNumber = voucherSeriesService.SaveLastSequence("Web-Pur");
         Optional<VoucherDetails> Existing = webRequestRep.findByvchNo(requestVoucher.vchNo());
         Long Id = null;
         VoucherDetails previous=null;
@@ -29,9 +32,11 @@ public class RequestService {
             Id=previous.getId();
             previous.getInventoryEntries().clear();
             previous.getLedgerEntries().clear();
+            voucherNumber=previous.getVchNo();
             webRequestRep.saveAndFlush(previous);
         }
         VoucherDetails voucherDetails = mappedVoucher.toEntity(requestVoucher);
+        voucherDetails.setVchNo(voucherNumber);
         voucherDetails.setId(Id);
         voucherDetails.setTallyStatus("Pending");
         webRequestRep.saveAndFlush(voucherDetails);

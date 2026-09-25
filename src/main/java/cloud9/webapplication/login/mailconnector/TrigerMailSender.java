@@ -15,7 +15,7 @@ public class TrigerMailSender {
     @Autowired
     private JavaMailSender javaMailSender;
 
-    public ResponseEntity<String> sendEmail(String recipient, String OTP) {
+    public void sendEmail(String recipient, String OTP) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom("noreplycloud9softtechnologies@gmail.com"); // REQUIRED
@@ -23,12 +23,12 @@ public class TrigerMailSender {
             message.setSubject("Your OTP Code");
             message.setText("Your OTP is: " + OTP + "\n Valid for 2 minute.");
             javaMailSender.send(message);
-            return ResponseEntity.status(HttpStatus.OK).body(
+            ResponseEntity.status(HttpStatus.OK).body(
                     Map.of("OTP", OTP).toString()
             );
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+          //  System.out.println(e.getMessage());
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Failed to send OTP: " + e.getMessage());
         }
     }

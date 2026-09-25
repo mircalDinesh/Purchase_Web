@@ -11,14 +11,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/auth/webrequest")
 public class ReqPurchase {
 
-    private final RequestService requestService;
+    private final RequestService serviceRequest;
 
-    public ReqPurchase(RequestService requestService) {
-        this.requestService = requestService;
+    public ReqPurchase(RequestService serviceRequest) {
+        this.serviceRequest = serviceRequest;
     }
 
+
     @PostMapping("/purchase")
-    public ResponseEntity<String> WebRequestPurchase(@RequestBody RequestVoucher requestVoucher){
-       return requestService.RequestService(requestVoucher);
+    public ResponseEntity<String> WebRequestPurchase(@RequestBody RequestVoucher requestVoucher) {
+       return serviceRequest.PurchaseRequest(requestVoucher);
     }
 }

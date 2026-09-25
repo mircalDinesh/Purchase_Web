@@ -1,5 +1,6 @@
 package cloud9.webapplication.purchase.webrequest.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 
 import java.math.BigDecimal;
@@ -13,11 +14,16 @@ public record RequestVoucher(
         String poNo,
         LocalDate poDate,
         LocalDate vchDate,
+        @JsonProperty("requestInventory")
         List<ItemDetails> requestInventory,
+        @JsonProperty("requestLedgerEntry")
         List<LedgerDetails> requestLedgerEntry,
         BigDecimal totalQty,
         String units,
-        BigDecimal voucherAmount
+        BigDecimal voucherAmount,
+        String createdBy,
+        LocalDate createdDate,
+        String voucherStatus
 ) {
     public record ItemDetails(
             String itemLine,
@@ -25,6 +31,8 @@ public record RequestVoucher(
             String qty,
             String uom,
             Long rate,
+            Integer disc,
+            Integer gst,
             BigDecimal itemAmount
     ){}
     public record LedgerDetails(

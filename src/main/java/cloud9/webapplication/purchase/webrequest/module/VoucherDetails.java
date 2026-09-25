@@ -1,9 +1,11 @@
 package cloud9.webapplication.purchase.webrequest.module;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -24,10 +26,16 @@ public class VoucherDetails {
     private BigDecimal totalQty;
     private String units;
     private BigDecimal voucherAmount;
+    private String createdBy;
+    private LocalDate createdDate;
+    private String voucherStatus;
+    private String tallyStatus;
 
-    @OneToMany(mappedBy = "voucherDetails", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "superkey")
     private List<VoucherInventory> inventoryEntries;
 
-    @OneToMany(mappedBy = "voucherDetails", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "superkey")
     private List<VoucherLedger> ledgerEntries;
 }

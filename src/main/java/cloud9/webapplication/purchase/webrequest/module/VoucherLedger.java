@@ -2,11 +2,13 @@ package cloud9.webapplication.purchase.webrequest.module;
 
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.math.BigDecimal;
 
 @Entity
 @Table(name="ledger_entries")
+@Data
 public class VoucherLedger {
 
 
@@ -19,7 +21,5 @@ public class VoucherLedger {
     private String percentage;
     private BigDecimal ledgerAmount;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "voucher_id")
-    private VoucherDetails voucherDetails;
+   // private VoucherDetails voucherDetails;
 }

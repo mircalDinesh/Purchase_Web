@@ -24,8 +24,7 @@ public class JavaWebToken {
         return Jwts.builder()
                 .subject(username)
                 .issuedAt(new Date())
-                // 1 Hour Expiration
-                .expiration(new Date(System.currentTimeMillis() + 54000))
+                .expiration(new Date(System.currentTimeMillis() + 86400000))
                 .signWith(getSigningKey())
                 .compact();
     }
@@ -33,15 +32,13 @@ public class JavaWebToken {
     public Date getExpiryDateFromJwtToken(String token) {
         return Jwts.parser()
                 .verifyWith(getSigningKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
+                .build().parseSignedClaims(token).getPayload()
                 .getExpiration();
     }
 
 
     public boolean validateToken(String authToken) {
-        System.out.println(authToken);
+       // System.out.println(authToken);
         try {
             Jwts.parser()
                     .verifyWith(getSigningKey()) // 0.12.x way to verify

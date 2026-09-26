@@ -30,6 +30,7 @@ public class VoucherDetails {
     private LocalDate createdDate;
     private String voucherStatus;
     private String tallyStatus;
+    private String attachedFile;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "superkey")

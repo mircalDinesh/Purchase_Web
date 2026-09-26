@@ -24,6 +24,7 @@ public record RequestVoucher(
         String createdBy,
         LocalDate createdDate,
         String voucherStatus
+
 ) {
     public record ItemDetails(
             String itemLine,

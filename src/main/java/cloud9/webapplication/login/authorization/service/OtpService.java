@@ -62,7 +62,9 @@ public class OtpService {
         OTPResponse responseOtp = new OTPResponse(
                 loginModule.getEmail(),
                 loginModule.getLedgerName(),
-                loginModule.getRole()
+                loginModule.getRole(),
+                null,
+                null
         );
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(responseOtp);

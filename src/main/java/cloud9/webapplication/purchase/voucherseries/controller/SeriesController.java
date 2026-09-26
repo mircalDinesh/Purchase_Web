@@ -15,9 +15,9 @@ public class SeriesController {
 
     private final VoucherSeriesService sequenceService;
 
-    @GetMapping("Last/{prefix}")
-    public ResponseEntity<String> getVoucherNumberSequence(@PathVariable String prefix) {
-        String preview = sequenceService.getLastNumber(prefix.toUpperCase());
+    @GetMapping("Last")
+    public ResponseEntity<String> getVoucherNumberSequence() {
+        String preview = sequenceService.getLastNumber();
         return ResponseEntity.ok(preview);
     }
 }

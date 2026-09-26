@@ -12,6 +12,8 @@ public class LoginModule {
         private Long id;
         private String ledgerName;
         private String role;
+        private String taxMode;
+        private String taxType;
         private String email;
         private String password;
         private String status;

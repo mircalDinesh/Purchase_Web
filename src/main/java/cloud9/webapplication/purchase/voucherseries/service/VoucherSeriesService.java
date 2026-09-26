@@ -20,14 +20,14 @@ public class VoucherSeriesService {
 
     // Preview VoucherNumber
     @Transactional(readOnly = true)
-    public String getLastNumber(@NonNull String prefix) {
+    public String getLastNumber() {
         String financialYear = getFinancialYear();
         VoucherSeries sequence = sequenceRepository
-          .findByPrefixAndFinancialYear(prefix, financialYear)
+          .findByPrefixAndFinancialYear("Web-Pur", financialYear)
                 .orElse(null);
         long nextNumber = (sequence != null) ? sequence.getLastNumber() + 1 : 1L;
         log.info("getPreviewNumber: nextNumber={}", nextNumber);
-        return String.format("%s/%04d/%s", prefix, nextNumber, financialYear);
+        return String.format("%s/%04d/%s", "Web-Pur", nextNumber, financialYear);
     }
 
     @Transactional
@@ -48,7 +48,7 @@ public class VoucherSeriesService {
                 );
 
         long nextNumber = seq.getLastNumber() + 1;
-        System.out.println(nextNumber);
+        //System.out.println(nextNumber);
         seq.setLastNumber(nextNumber);
 
         sequenceRepository.saveAndFlush(seq);

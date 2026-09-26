@@ -6,11 +6,16 @@ import cloud9.webapplication.purchase.webrequest.module.VoucherDetails;
 import cloud9.webapplication.purchase.webrequest.repo.WebRequestRep;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -19,10 +24,10 @@ public class RequestService {
     private final WebRequestRep webRequestRep;
     private final MappingVoucher mappedVoucher;
     private final VoucherSeriesService voucherSeriesService;
-
+    private static final String UPLOAD_DIR = "uploads/purchase-attachments/";
 
     @Transactional
-    public ResponseEntity<String> PurchaseRequest(@RequestBody RequestVoucher requestVoucher){
+    public String PurchaseRequest(RequestVoucher requestVoucher, MultipartFile attachment){
         String voucherNumber = voucherSeriesService.SaveLastSequence("Web-Pur");
         Optional<VoucherDetails> Existing = webRequestRep.findByvchNo(requestVoucher.vchNo());
         Long Id = null;
@@ -39,8 +44,30 @@ public class RequestService {
         voucherDetails.setVchNo(voucherNumber);
         voucherDetails.setId(Id);
         voucherDetails.setTallyStatus("Pending");
+        // Handle optional PDF attachment
+        if (attachment != null && !attachment.isEmpty()) {
+            storeAttachment(voucherDetails, attachment, voucherDetails.getVchNo());
+        }
         webRequestRep.saveAndFlush(voucherDetails);
-     //   System.out.println("RequestVoucher:"+requestVoucher);
-        return ResponseEntity.ok().body("Success");
+        return "Purchase voucher " + voucherNumber + " saved successfully with ID "  ;
+    }
+
+
+    private void storeAttachment(VoucherDetails voucher, MultipartFile file, String vchNo) {
+        try {
+            String StoringPath=UPLOAD_DIR+"/"+voucher.getSupplierName();
+            Path uploadPath = Paths.get(StoringPath).toAbsolutePath().normalize();
+            Files.createDirectories(uploadPath);
+            String safeVchNo =vchNo.replaceAll("[\\\\/:*?\"<>|]", "_").trim();
+            String fileName = safeVchNo  + ".pdf";
+            Path filePath = uploadPath.resolve(fileName);
+            System.out.println("Target file path: " + filePath);
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            voucher.setAttachedFile(filePath.toString());
+            System.out.println("File saved successfully at: " + filePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to store PDF attachment: " + e.getMessage(), e);
+        }
     }
 }

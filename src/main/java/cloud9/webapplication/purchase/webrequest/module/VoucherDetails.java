@@ -39,4 +39,5 @@ public class VoucherDetails {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "superkey")
     private List<VoucherLedger> ledgerEntries;
+
 }

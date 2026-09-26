@@ -24,6 +24,7 @@ public class Config {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 // Cross Site Origi Force
+                .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth->auth
                                 .requestMatchers("/api/auth/**").permitAll()
@@ -44,7 +45,8 @@ public class Config {
         CorsConfiguration configuration = new CorsConfiguration();
         // Allowed Origins (No trailing slashes)
         configuration.setAllowedOrigins(List.of(
-                "http://localhost:5173"
+                "http://localhost:5173",
+                "http://localhost:4200"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));

@@ -16,11 +16,15 @@ public interface MappingVoucher {
     @Mapping(source = "requestLedgerEntry", target = "ledgerEntries")
         // adjust to your actual target field name
     VoucherDetails toEntity(RequestVoucher request);
-
     VoucherInventory toInvEntity(RequestVoucher.ItemDetails itemDetails);
-
     // Same pattern if you also need ledger entries mapped to their own entity
     VoucherLedger toLedgerEntity(RequestVoucher.LedgerDetails ledgerDetails);
+
+    @Mapping(source = "inventoryEntries", target = "requestInventory")
+    @Mapping(source = "ledgerEntries", target = "requestLedgerEntry")
+    RequestVoucher toDto(VoucherDetails voucherDetails);
+    RequestVoucher.ItemDetails toDto(VoucherInventory  inventory);
+    RequestVoucher.LedgerDetails toDto(VoucherLedger  ledgerDetails);
 
 
     @AfterMapping
